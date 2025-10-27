@@ -6,35 +6,22 @@ import { ArrowLeft } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { useBreezService } from '@/context/BreezServiceContext';
-import { useEffect, useState } from 'react';
-import { ReceivePaymentMethod } from '@breeztech/breez-sdk-spark-react-native';
+import { useEffect } from 'react';
+import { useWalletManager } from '@/context/WalletManagerContext';
 
 export default function MyWalletManagementSecret() {
   const router = useRouter();
 
-  const { balanceInSats, refreshWalletInfo, receivePayment } = useBreezService();
-  const [invoice, setInvoice] = useState('');
+  const { balanceInSats, refreshWalletInfo } = useWalletManager();
 
   const backgroundColor = useThemeColor({}, 'background');
   const primaryTextColor = useThemeColor({}, 'textPrimary');
 
   useEffect(() => {
-    const getInfo = async () => {
-      const paymentMethod = new ReceivePaymentMethod.Bolt11Invoice({
-        description: 'Turetta',
-        amountSats: BigInt(1000),
-      });
-      const invoice = await receivePayment(paymentMethod);
-      setInvoice(invoice);
-    };
-
-    getInfo();
-
     setInterval(() => {
       refreshWalletInfo();
     }, 1000);
-  }, []);
+  }, [refreshWalletInfo]);
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
@@ -50,7 +37,6 @@ export default function MyWalletManagementSecret() {
         <ThemedView style={styles.content}>
           <ScrollView style={styles.content}>
             <ThemedText style={{ color: primaryTextColor }}>Balance: {balanceInSats}</ThemedText>
-            <ThemedText style={{ color: primaryTextColor }}>{invoice}</ThemedText>
           </ScrollView>
         </ThemedView>
       </ThemedView>

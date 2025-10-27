@@ -10,7 +10,7 @@ import { DeeplinkProvider } from '@/context/DeeplinkContext';
 import { ActivitiesProvider } from '@/context/ActivitiesContext';
 import { DatabaseProvider } from '@/context/DatabaseContext';
 import { MnemonicProvider, useMnemonic } from '@/context/MnemonicContext';
-import NostrServiceProvider, { useNostrService } from '@/context/NostrServiceContext';
+import { useNostrService } from '@/context/NostrServiceContext';
 import { StatusBar } from 'expo-status-bar';
 import { Colors } from '@/constants/Colors';
 import { Asset } from 'expo-asset';
@@ -23,7 +23,7 @@ import * as Notifications from 'expo-notifications';
 import { ECashProvider } from '@/context/ECashContext';
 import { SQLiteProvider } from 'expo-sqlite';
 import migrateDbIfNeeded from '@/migrations/DatabaseMigrations';
-import BreezServiceProvider from '@/context/BreezServiceContext';
+import WalletManagerContextProvider from '@/context/WalletManagerContext';
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -114,20 +114,18 @@ const AuthenticatedAppContent = () => {
 
   return (
     <ECashProvider mnemonic={mnemonic || ''}>
-      <NostrServiceProvider mnemonic={mnemonic || ''} walletUrl={walletUrl}>
-        <BreezServiceProvider>
-          <UserProfileProvider>
-            <ActivitiesProvider>
-              <PendingRequestsProvider>
-                <DeeplinkProvider>
-                  <NotificationConfigurator />
-                  <Stack screenOptions={{ headerShown: false }} />
-                </DeeplinkProvider>
-              </PendingRequestsProvider>
-            </ActivitiesProvider>
-          </UserProfileProvider>
-        </BreezServiceProvider>
-      </NostrServiceProvider>
+      <WalletManagerContextProvider>
+        <UserProfileProvider>
+          <ActivitiesProvider>
+            <PendingRequestsProvider>
+              <DeeplinkProvider>
+                <NotificationConfigurator />
+                <Stack screenOptions={{ headerShown: false }} />
+              </DeeplinkProvider>
+            </PendingRequestsProvider>
+          </ActivitiesProvider>
+        </UserProfileProvider>
+      </WalletManagerContextProvider>
     </ECashProvider>
   );
 };

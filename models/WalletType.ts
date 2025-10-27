@@ -1,6 +1,10 @@
-enum WalletType {
-  BREEZ = 1,
-  NWC = 2,
-}
+export const WALLET_TYPE = {
+  BREEZ: 'BREEZ',
+  NWC: 'NWC',
+} as const;
 
-export default WalletType;
+export type WalletType = (typeof WALLET_TYPE)[keyof typeof WALLET_TYPE];
+
+export type Wallet = {
+  getBalanceInSats: () => Promise<bigint>;
+};
